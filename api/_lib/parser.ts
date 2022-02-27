@@ -1,19 +1,16 @@
 import { IncomingMessage } from "http";
-import { parse } from "url";
 import { ParsedRequest } from "./types";
 
 export function parseRequest(req: IncomingMessage) {
   console.log("HTTP " + req.url);
-  const { pathname, query } = parse(req.url || "/", true);
-  const { fontSize, md, time } = query || {};
+  const { pathname, search } = new URL(
+    "https://og-image.k-w.info" + req.url || "/"
+  );
+  const query = new URLSearchParams(search);
 
-  if (Array.isArray(fontSize)) {
-    throw new Error("Expected a single fontSize");
-  }
-
-  if (Array.isArray(time)) {
-    throw new Error("Expected a single text");
-  }
+  const fontSize = query.get("fontSize");
+  const time = query.get("time");
+  const md = query.get("md");
 
   const arr = (pathname || "/").slice(1).split(".");
   let extension = "";
@@ -32,7 +29,7 @@ export function parseRequest(req: IncomingMessage) {
     text: decodeURIComponent(text),
     md: md === "1" || md === "true",
     time: time || "",
-    fontSize: fontSize || "96px",
+    fontSize: fontSize || "128px",
   };
 
   return parsedRequest;
