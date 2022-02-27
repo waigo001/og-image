@@ -7,9 +7,6 @@ const icon = readFileSync(`${__dirname}/../_assets/icon.png`).toString(
   "base64"
 );
 
-const jpy = readFileSync(`${__dirname}/../_fonts/NotoSansJP-Bold.otf`).toString(
-  "base64"
-);
 const eng = readFileSync(`${__dirname}/../_fonts/Roboto-Bold.ttf`).toString(
   "base64"
 );
@@ -20,12 +17,7 @@ const emoji = readFileSync(
 
 function getCss(fontSize: string) {
   return `
-      @font-face {
-        font-family: 'Noto Sans JP';
-        font-style:  normal;
-        font-weight: bold;
-        src: url(data:font/otf;charset=utf-8;base64,${jpy}) format('otf');
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700');
 
      @font-face {
         font-family: Roboto;
