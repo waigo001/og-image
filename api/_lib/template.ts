@@ -2,9 +2,6 @@ import { readFileSync } from "fs";
 import { marked } from "marked";
 import { sanitizeHtml } from "./sanitizer";
 import { ParsedRequest } from "./types";
-const twemoji = require("twemoji");
-const twOptions = { folder: "svg", ext: ".svg" };
-const emojify = (text: string) => twemoji.parse(text, twOptions);
 
 const icon = readFileSync(`${__dirname}/../_assets/icon.png`).toString(
   "base64"
@@ -17,7 +14,11 @@ const eng = readFileSync(`${__dirname}/../_fonts/Roboto-Bold.ttf`).toString(
   "base64"
 );
 
-function getCss() {
+const emoji = readFileSync(
+  `${__dirname}/../_fonts/NotoSansSymbols2-Regular.ttf`
+).toString("base64");
+
+function getCss(fontSize: string) {
   return `
       @font-face {
         font-family: 'Noto Sans JP';
@@ -33,13 +34,20 @@ function getCss() {
         src: url(data:font/ttf;charset=utf-8;base64,${eng}) format('truetype');
     }
 
+      @font-face {
+        font-family: "Noto Sans Symbols 2";
+        font-style:  normal;
+        font-weight: 400;
+        src: url(data:font/ttf;charset=utf-8;base64,${emoji}) format('truetype');
+    }
+
     body {
         height: 100vh;
         display: flex;
         text-align: center;
         align-items: center;
         justify-content: center;
-        font-family: "Roboto", "Noto Sans JP";
+        font-family: "Roboto", "Noto Sans JP", "Noto Sans Symbols 2";
     }
 
       .heading {
@@ -48,7 +56,7 @@ function getCss() {
         -webkit-line-clamp: 2;
         overflow: hidden;
 
-        font-size: 128px;
+        font-size: ${sanitizeHtml(fontSize)};
         font-weight: bold;
         word-wrap: break-word;
 
@@ -80,22 +88,22 @@ function getCss() {
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { text, md } = parsedReq;
+  const { text, fontSize, md, time } = parsedReq;
   return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        ${getCss()}
+        ${getCss(fontSize)}
     </style>
     <body>
 
       <div class="heading">
-        ${emojify(md ? marked(text) : sanitizeHtml(text))}
+        ${md ? marked(text) : sanitizeHtml(text)}
       </div>
       <div class="bottom">
-        <div class="time">2022/02/22</div>
+        <div class="time">${time}</div>
           <div class="logo">
             <image width="96px" height="96px" src="data:image/png;base64,${icon}" />
             <svg height="64px" viewBox="0 0 95 20">
