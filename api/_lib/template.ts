@@ -36,7 +36,7 @@ function getCss() {
         margin-left: 128px;
         margin-right: 128px;
         margin-top: 0;
-        margin-bottom: 0;
+        margin-bottom: 128px;
       }
 
       .bottom {
