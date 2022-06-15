@@ -1,5 +1,6 @@
-import { ParsedRequest, FileType } from "../api/_lib/types";
+import type { ParsedRequest, FileType } from "../api/_lib/types";
 const { H, R, copee } = window as any;
+
 let timeout = -1;
 
 interface ImagePreviewProps {
@@ -61,18 +62,28 @@ const Dropdown = ({ options, value, onchange, small }: DropdownProps) => {
 interface TextInputProps {
   value: string;
   oninput: (val: string) => void;
+  small: boolean;
+  placeholder?: string;
+  type?: string;
 }
 
-const TextInput = ({ value, oninput }: TextInputProps) => {
+const TextInput = ({
+  value,
+  oninput,
+  small,
+  type = "text",
+  placeholder = "",
+}: TextInputProps) => {
   return H(
     "div",
-    { className: "input-outer-wrapper" },
+    { className: "input-outer-wrapper" + (small ? " small" : "") },
     H(
       "div",
       { className: "input-inner-wrapper" },
       H("input", {
-        type: "text",
+        type,
         value,
+        placeholder,
         oninput: (e: any) => oninput(e.target.value),
       })
     )
